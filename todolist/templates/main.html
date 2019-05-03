@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>To-Do List</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <style>
+            ion-icon {
+                display: inline-flex;
+                vertical-align: bottom !important;
+                height: 1.5em;
+            }
+ 
+            .todo-table thead, .todo-table tr {
+                display: block;
+                width: 100%;
+            }
+
+            .todo-table tbody {
+                display: block;
+                overflow-y: auto;
+                max-height: 300px;
+                width: 100%;
+            }
+
+            .todo-table td, .todo-table th {
+                float: left;
+                height: 100%;
+            }
+
+            .todo-table th {
+                border: 1px solid lightgray;
+            }
+
+            .blue-bg {
+                background-color: #007bff;
+            }
+
+            .green-bg {
+                background-color: #28a745;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container border">
+            <div class="row justify-content-center border bg-dark">
+                <div class="col text-center">
+                    <h1 style="color: white;">Things To Get Done</h1>
+                </div>
+            </div>
+            <div class="row justify-content-center border">
+                <div class="col text-center">
+                    <h3 class="m-2">Active Items</h3>
+                    <table class="table w-100 m-1 todo-table">
+                        <thead>
+                            <tr>
+                                <th class="col-2 blue-bg">Status</th>
+                                <th class="col-2 blue-bg">Target Date</th>
+                                <th class="col-7 blue-bg">Title</th>
+                                <th class="col-1 blue-bg">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if active_tasks %}
+                            {% for task in active_tasks %}
+                            <tr id="task-id-{{ task.id }}">
+                                <td class="col-2"><a href="/task/{{ task.id }}/toggle/"><input type="checkbox"></a></td>
+                                <td class="col-2">{{ task.target_date.strftime('%m-%d-%Y') }}</td>
+                                <td class="col-7">{{ task.title }}</td>
+                                <td class="col-1 text-center"><a href="/task/{{ task.id }}/remove/"><ion-icon name="close-circle-outline"></ion-icon></a></td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr class="text-muted">
+                                <td class="col-2"><input type="checkbox" disabled></td>
+                                <td class="col-2">n/a</td>
+                                <td class="col-7">Add a new item to your list!</td>
+                                <td class="col-1 text-center"><a><ion-icon name="close-circle-outline"></ion-icon></a></td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    <a class="btn btn-primary m-2" href="/task/new/"><ion-icon name="add-circle-outline"></ion-icon> Add New Item</a>
+                </div>
+            </div>
+            <div class="row justify-content-center border">
+                    <div class="col text-center">
+                        <h3 class="m-2">Completed Items</h3>
+                        <table class="table w-100 m-1 todo-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-2 green-bg">Status</th>
+                                    <th class="col-2 green-bg">Target Date</th>
+                                    <th class="col-7 green-bg">Title</th>
+                                    <th class="col-1 green-bg">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if completed_tasks %}
+                                {% for task in completed_tasks %}
+                                <tr id="task-id-{{ task.id }}">
+                                    <td class="col-2"><a href="/task/{{ task.id }}/toggle/"><input type="checkbox" checked="true"></a></td>
+                                    <td class="col-2">{{ task.target_date }}</td>
+                                    <td class="col-7">{{ task.title }}</td>
+                                    <td class="col-1 text-center"><a href="/task/{{ task.id }}/remove/"><ion-icon name="close-circle-outline"></ion-icon></a></td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr class="text-muted">
+                                    <td class="col-2"><input type="checkbox" checked="true" disabled></td>
+                                    <td class="col-2">n/a</td>
+                                    <td class="col-7">Completed items will show up here!</td>
+                                    <td class="col-1 text-center"><a><ion-icon name="close-circle-outline"></ion-icon></a></td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://unpkg.com/ionicons@4.5.5/dist/ionicons.js"></script>
+    </body>
+</html>
