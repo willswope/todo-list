@@ -1,12 +1,14 @@
-from flask import request, render_template, redirect, url_for, current_app
-from todolist import todo_task, create_app, db
+from flask import request, render_template, redirect, url_for, session
+from todolist import todo_task, create_app, db, auth, create_app
+from todolist.auth import require_login
+# import todolist.auth as auth
 
-# Initialize the application and db.
+# Initialize the application. create_app is called here due to annoying linter restrictions.
 app = create_app()
-db.create_all(app=app)
 
 
 @app.route('/')
+@require_login
 def homepage():
     """Display the main page of the application."""
     return render_template(
@@ -19,6 +21,7 @@ def homepage():
 
 
 @app.route('/task/new/', methods=['GET', 'POST'])
+@require_login
 def add_task():
     """If the request is a GET request, show the form to create a new Task, or
     if the request is a POST request, attempt to create a new Task instance."""
@@ -31,9 +34,9 @@ def add_task():
 
         # Create new task.
         new_task = todo_task.Task(
-                title=request.form['taskTitle'],
-                target_date=request.form['targetDate']
-            )
+            title=request.form['taskTitle'],
+            target_date=request.form['targetDate']
+        )
         db.session.add(new_task)
 
         app.logger.debug(
@@ -42,11 +45,12 @@ def add_task():
 
         db.session.commit()
 
-        # Redirect the user back to the homepage after creating the new Task.
+        # Redirect the user back to the homepage after creating the new task.
         return redirect(url_for('homepage'))
 
 
 @app.route('/task/<int:task_id>/remove/')
+@require_login
 def remove_task(task_id):
     """Delete the task with the specified task ID."""
 
@@ -56,8 +60,8 @@ def remove_task(task_id):
     db.session.delete(task)
 
     app.logger.debug(
-            'Attempting to delete task: {}'.format(task)
-        )
+        'Attempting to delete task: {}'.format(task)
+    )
 
     db.session.commit()
 
@@ -66,6 +70,7 @@ def remove_task(task_id):
 
 
 @app.route('/task/<int:task_id>/toggle/')
+@require_login
 def toggle_task_active(task_id):
     """Toggle the completion status of a task, based on the given task ID."""
 
